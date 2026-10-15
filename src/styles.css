@@ -252,6 +252,29 @@ body {
   color: #a9cbe0;
 }
 
+/* 特別色：出國行李懶人包（筆記中以 accent 標記的那一類） */
+
+.noticebtn.hl {
+  background: #fff4ea;
+  border-color: #e6b184;
+  color: #b4530f;
+}
+
+.noticebtn.hl .nbnum {
+  color: #c8763f;
+}
+
+.noticebtn.hl.on,
+.noticebtn.hl.on:active {
+  background: #e07b39;
+  border-color: #e07b39;
+  color: #fff;
+}
+
+.noticebtn.hl.on .nbnum {
+  color: #ffe3cc;
+}
+
 /* ---------- 行前提醒清單 ---------- */
 
 .noticelist {

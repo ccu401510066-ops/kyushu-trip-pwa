@@ -3,7 +3,7 @@ export type Stop = { name: string; time: string; body: string; photo: string }
 export type Callout = { tag: string; items: string[] }
 export type Day = { id: string; date: string; short: string; title: string; meta: string; stops: Stop[]; move: string; fallbacks: Callout | null }
 export type Stat = { k: string; v: string; n: string }
-export type Notice = { tag: string; items: string[] }
+export type Notice = { tag: string; items: string[]; highlight?: boolean }
 export type Trip = {
   eyebrow: string
   title: string
@@ -52,6 +52,11 @@ export const trip: Trip = {
   ],
   "notices": [
     {
+      "tag": "出國行李懶人包",
+      "items": [],
+      "highlight": true
+    },
+    {
       "tag": "行前必辦",
       "items": [
         "**租車（2 台）**：6 位大人拆成每台 3 人，**一般 5 人座 SUV／廂型車就夠**，不必租到大車。**D1 不取車**，改在 **D2（1/23）早上 08:00 於熊本駅前取車**（熊本駅前周邊有 Toyota、Nippon、Orix 等，多數 08:00 開門；跨縣甲租乙還、福岡機場還車）。兩台一起辦，當場確認都裝好雪胎、各拿到一張 ETC 卡。",
@@ -65,7 +70,8 @@ export const trip: Trip = {
         "**阿蘇中岳火口**：2026/10 查證時為噴火警戒等級 2、周邊 1 公里禁入、接駁巴士與公園道路封閉。出發前 1–2 天務必再查 aso-volcano.jp，行程不綁死火口。",
         "**回程班機**：**1/29（五）福岡→高雄**，以華航 CI139（約 11:40 起飛）為主，**訂位前先確認當天有班**。長榮 BR119 冬季班表不穩，訂位前請確認。",
         "**溫泉地參觀提醒**：本行程以「參觀」溫泉地為主，不使用浴場。這類設施多為男女分開的大浴場（同性别共浴）；由布院金鱗湖旁的「下ん湯」為**混浴**共同浴場，路過時留意不要誤入。"
-      ]
+      ],
+      "highlight": false
     },
     {
       "tag": "出發前",
@@ -79,11 +85,8 @@ export const trip: Trip = {
         "**還車時間要記牢**：租車是 D2（1/23）08:00 取車，**1/28（四）08:00 前還車剛好滿 5 天**；晚一小時就跨進第 6 天，2 台車要多付約 ¥10,000 以上。還車地點是**福岡機場國際線航廈 1 樓**，2 台車都要**先加滿油、保留加油收據**。",
         "**回程班機 1/29（五）**：確認班機時間後，回頭調整 D8 早上的行程份量（**博多站商場 10:00 才開，早上買不到伴手禮**）；福岡住 3 晚（1/26–1/28），訂房時一併確認。",
         "各景點票價與營業時間為 2026 年 10 月查證版本，出發前請以官方網站為準。"
-      ]
-    },
-    {
-      "tag": "出國行李懶人包",
-      "items": []
+      ],
+      "highlight": false
     }
   ],
   "days": [

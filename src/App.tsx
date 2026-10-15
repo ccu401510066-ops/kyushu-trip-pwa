@@ -200,7 +200,9 @@ export default function App() {
           {trip.notices.map((g) => (
             <button
               key={g.tag}
-              className={`noticebtn${openNotice === g.tag ? ' on' : ''}`}
+              className={`noticebtn${g.highlight ? ' hl' : ''}${
+                openNotice === g.tag ? ' on' : ''
+              }`}
               onClick={() =>
                 setOpenNotice((prev) => (prev === g.tag ? null : g.tag))
               }

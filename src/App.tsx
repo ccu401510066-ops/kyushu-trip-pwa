@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { trip, type Day } from './trip'
 
 type BIPEvent = Event & {
@@ -33,85 +33,63 @@ function RichText({ text }: { text: string }) {
   )
 }
 
-/** 收合狀態顯示的一行摘要：日期 + 停留點數。 */
-function shortMeta(day: Day) {
-  const date = day.meta.split('｜')[0] ?? ''
-  return `${date}・${day.stops.length} 個停留點`
-}
-
-function DayCard({
-  day,
-  open,
-  onToggle,
-}: {
-  day: Day
-  open: boolean
-  onToggle: () => void
-}) {
+/** 選中那一天的完整內容。 */
+function DayPanel({ day }: { day: Day }) {
   return (
-    <article className={`day${open ? ' open' : ''}`} id={`day-${day.id}`}>
-      <button className="dayhead" onClick={onToggle} aria-expanded={open}>
-        <span className="dnum">{day.id}</span>
-        <span className="dtitle">
-          <span className="dname">{day.title}</span>
-          <span className="dsub">{shortMeta(day)}</span>
-        </span>
-        <span className="chev" aria-hidden="true" />
-      </button>
+    <article className="day" id={`day-${day.id}`}>
+      <header className="daytop">
+        <h3 className="dname">{day.title}</h3>
+        <div className="metarow">
+          {day.meta.split('｜').map((part, i) => (
+            <span key={i} className={i === 0 ? 'mdate' : 'mchip'}>
+              {part}
+            </span>
+          ))}
+        </div>
+      </header>
 
-      <div className="daybody">
-        <div className="dayinner">
-          <div className="metarow">
-            {day.meta.split('｜').map((part, i) => (
-              <span key={i} className={i === 0 ? 'mdate' : 'mchip'}>
-                {part}
-              </span>
-            ))}
-          </div>
+      <ol className="stops">
+        {day.stops.map((stop, i) => (
+          <li className="stop" key={i}>
+            <div className="stopimg">
+              <img src={photoUrl(stop.photo)} alt={stop.name} loading="lazy" />
+            </div>
+            <div className="stoptext">
+              <div className="stoptop">
+                <h4>{stop.name}</h4>
+                {stop.time && <span className="stime">{stop.time}</span>}
+              </div>
+              <RichText text={stop.body} />
+            </div>
+          </li>
+        ))}
+      </ol>
 
-          <ol className="stops">
-            {day.stops.map((stop, i) => (
-              <li className="stop" key={i}>
-                <div className="stopimg">
-                  <img src={photoUrl(stop.photo)} alt={stop.name} loading="lazy" />
-                </div>
-                <div className="stoptext">
-                  <div className="stoptop">
-                    <h3>{stop.name}</h3>
-                    {stop.time && <span className="stime">{stop.time}</span>}
-                  </div>
-                  <RichText text={stop.body} />
-                </div>
+      {day.fallbacks && (
+        <details className="callout fb">
+          <summary>
+            <span className="ctag">{day.fallbacks.tag}</span>
+            <span className="cnum">{day.fallbacks.items.length} 則</span>
+          </summary>
+          <ul>
+            {day.fallbacks.items.map((it, j) => (
+              <li key={j}>
+                <RichText text={it} />
               </li>
             ))}
-          </ol>
-
-          {day.fallbacks && (
-            <details className="callout fb">
-              <summary>
-                <span className="ctag">{day.fallbacks.tag}</span>
-                <span className="cnum">{day.fallbacks.items.length} 則</span>
-              </summary>
-              <ul>
-                {day.fallbacks.items.map((it, j) => (
-                  <li key={j}>
-                    <RichText text={it} />
-                  </li>
-                ))}
-              </ul>
-            </details>
-          )}
-        </div>
-      </div>
+          </ul>
+        </details>
+      )}
     </article>
   )
 }
 
 export default function App() {
-  // 一次只看一天；沒點任何日期時全部收合。
+  // 一次只看一天；沒點任何日期時，日期按鈕下方不顯示任何行程。
   const [selected, setSelected] = useState<string | null>(null)
   const [installEvt, setInstallEvt] = useState<BIPEvent | null>(null)
   const [online, setOnline] = useState(true)
+  const navRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
     const onBIP = (e: Event) => {
@@ -131,27 +109,26 @@ export default function App() {
     }
   }, [])
 
-  const pick = useCallback(
-    (id: string) => {
-      const next = selected === id ? null : id
-      setSelected(next)
-      if (next) {
-        // 選到的那天可能在畫面外，等它展開後帶進視野。
-        requestAnimationFrame(() => {
-          document
-            .getElementById(`day-${next}`)
-            ?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
-        })
-      }
-    },
-    [selected],
-  )
+  const pick = useCallback((id: string) => {
+    setSelected((prev) => (prev === id ? null : id))
+  }, [])
+
+  // 換到別天時，讓那天的標題剛好落在日期按鈕下方，不會被黏在上方的按鈕蓋住。
+  useEffect(() => {
+    if (!selected) return
+    const el = document.getElementById(`day-${selected}`)
+    if (!el) return
+    const navH = navRef.current?.offsetHeight ?? 0
+    const y = el.getBoundingClientRect().top + window.scrollY - navH - 10
+    window.scrollTo({ top: Math.max(y, 0), behavior: 'smooth' })
+  }, [selected])
 
   const [mainTitle, subTitle] = trip.title.includes('：')
     ? trip.title.split('：')
     : [trip.title, '']
 
   const totalStops = trip.days.reduce((n, d) => n + d.stops.length, 0)
+  const current = trip.days.find((d) => d.id === selected) ?? null
 
   return (
     <div className="page">
@@ -210,16 +187,14 @@ export default function App() {
       </section>
 
       <section className="panel">
-        <div className="phead">
-          <h2 className="ptitle">
-            每日行程
-            <span className="count">
-              {trip.days.length} 天・{totalStops} 個停留點
-            </span>
-          </h2>
-        </div>
+        <h2 className="ptitle">
+          每日行程
+          <span className="count">
+            {trip.days.length} 天・{totalStops} 個停留點
+          </span>
+        </h2>
 
-        <nav className="daynav" aria-label="選擇要看哪一天的行程">
+        <nav className="daynav" ref={navRef} aria-label="選擇要看哪一天的行程">
           {trip.days.map((day) => (
             <button
               key={day.id}
@@ -233,16 +208,7 @@ export default function App() {
           ))}
         </nav>
 
-        <div className="days">
-          {trip.days.map((day) => (
-            <DayCard
-              key={day.id}
-              day={day}
-              open={selected === day.id}
-              onToggle={() => pick(day.id)}
-            />
-          ))}
-        </div>
+        <div className="daywrap">{current && <DayPanel day={current} />}</div>
       </section>
 
       {trip.credit && (

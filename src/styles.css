@@ -190,18 +190,56 @@ body {
   letter-spacing: 0;
 }
 
-.toggleall {
+/* ---------- Date nav ---------- */
+
+.daynav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(76px, 1fr));
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.daybtn {
   font: inherit;
-  font-size: 12.5px;
-  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 8px 4px 7px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
   color: var(--navy);
-  background: var(--sand);
-  border: none;
-  border-radius: 999px;
-  padding: 6px 13px;
   cursor: pointer;
-  white-space: nowrap;
-  margin-bottom: 14px;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.daybtn:active {
+  transform: translateY(1px);
+}
+
+.dbdate {
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.dbshort {
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--muted);
+}
+
+.daybtn.on {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+}
+
+.daybtn.on .dbshort {
+  color: #a9cbe0;
 }
 
 /* ---------- Callouts ---------- */
@@ -385,6 +423,14 @@ body {
   background: var(--sand);
   border-radius: 999px;
   padding: 3px 10px;
+}
+
+/* ---------- 當天的備案 ---------- */
+
+.fb {
+  margin: 16px 16px;
+  background: var(--sand);
+  border-color: #e2d8c8;
 }
 
 /* ---------- Stops ---------- */

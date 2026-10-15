@@ -49,7 +49,7 @@ function DayCard({
   onToggle: () => void
 }) {
   return (
-    <article className={`day${open ? ' open' : ''}`}>
+    <article className={`day${open ? ' open' : ''}`} id={`day-${day.id}`}>
       <button className="dayhead" onClick={onToggle} aria-expanded={open}>
         <span className="dnum">{day.id}</span>
         <span className="dtitle">
@@ -85,6 +85,22 @@ function DayCard({
               </li>
             ))}
           </ol>
+
+          {day.fallbacks && (
+            <details className="callout fb">
+              <summary>
+                <span className="ctag">{day.fallbacks.tag}</span>
+                <span className="cnum">{day.fallbacks.items.length} 則</span>
+              </summary>
+              <ul>
+                {day.fallbacks.items.map((it, j) => (
+                  <li key={j}>
+                    <RichText text={it} />
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
         </div>
       </div>
     </article>
@@ -92,7 +108,8 @@ function DayCard({
 }
 
 export default function App() {
-  const [open, setOpen] = useState<Set<string>>(() => new Set([trip.days[0]?.id ?? '']))
+  // 一次只看一天；沒點任何日期時全部收合。
+  const [selected, setSelected] = useState<string | null>(null)
   const [installEvt, setInstallEvt] = useState<BIPEvent | null>(null)
   const [online, setOnline] = useState(true)
 
@@ -114,18 +131,21 @@ export default function App() {
     }
   }, [])
 
-  const toggle = useCallback((id: string) => {
-    setOpen((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
-  }, [])
-
-  const allOpen = open.size === trip.days.length
-  const toggleAll = () =>
-    setOpen(allOpen ? new Set() : new Set(trip.days.map((d) => d.id)))
+  const pick = useCallback(
+    (id: string) => {
+      const next = selected === id ? null : id
+      setSelected(next)
+      if (next) {
+        // 選到的那天可能在畫面外，等它展開後帶進視野。
+        requestAnimationFrame(() => {
+          document
+            .getElementById(`day-${next}`)
+            ?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+        })
+      }
+    },
+    [selected],
+  )
 
   const [mainTitle, subTitle] = trip.title.includes('：')
     ? trip.title.split('：')
@@ -197,18 +217,29 @@ export default function App() {
               {trip.days.length} 天・{totalStops} 個停留點
             </span>
           </h2>
-          <button className="toggleall" onClick={toggleAll}>
-            {allOpen ? '全部收合' : '全部展開'}
-          </button>
         </div>
+
+        <nav className="daynav" aria-label="選擇要看哪一天的行程">
+          {trip.days.map((day) => (
+            <button
+              key={day.id}
+              className={`daybtn${selected === day.id ? ' on' : ''}`}
+              onClick={() => pick(day.id)}
+              aria-pressed={selected === day.id}
+            >
+              <span className="dbdate">{day.date}</span>
+              <span className="dbshort">{day.short}</span>
+            </button>
+          ))}
+        </nav>
 
         <div className="days">
           {trip.days.map((day) => (
             <DayCard
               key={day.id}
               day={day}
-              open={open.has(day.id)}
-              onToggle={() => toggle(day.id)}
+              open={selected === day.id}
+              onToggle={() => pick(day.id)}
             />
           ))}
         </div>

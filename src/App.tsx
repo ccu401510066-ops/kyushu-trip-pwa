@@ -34,6 +34,21 @@ function RichText({ text }: { text: string }) {
   )
 }
 
+/** 只把 **粗體** 轉成節點，不切段落；給標題下的導言用。 */
+function Inline({ text }: { text: string }) {
+  return (
+    <>
+      {text.split(/(\*\*[^*]+\*\*)/g).map((seg, i) =>
+        seg.startsWith('**') && seg.endsWith('**') ? (
+          <strong key={i}>{seg.slice(2, -2)}</strong>
+        ) : (
+          <span key={i}>{seg}</span>
+        ),
+      )}
+    </>
+  )
+}
+
 /** 選中那一天的完整內容。 */
 function DayPanel({ day }: { day: Day }) {
   return (
@@ -65,6 +80,13 @@ function DayPanel({ day }: { day: Day }) {
           </li>
         ))}
       </ol>
+
+      {day.move && (
+        <div className="moveblock">
+          <span className="mtag">這天怎麼開</span>
+          <RichText text={day.move} />
+        </div>
+      )}
 
       {day.fallbacks && (
         <details className="callout fb">
@@ -139,7 +161,9 @@ export default function App() {
         <p className="eyebrow">{trip.eyebrow}</p>
         <h1>{mainTitle}</h1>
         {subTitle && <p className="subtitle">{subTitle}</p>}
-        <p className="lede">{trip.lede}</p>
+        <p className="lede">
+          <Inline text={trip.lede} />
+        </p>
         <div className="badges">
           <span className={`badge ${online ? 'ok' : 'off'}`}>
             {online ? '已連線' : '離線中・仍可查看'}
@@ -161,7 +185,7 @@ export default function App() {
       <figure className="routemap">
         <img
           src={routeMapUrl}
-          alt="九州自駕路線示意圖：熊本 → 阿蘇 → 黑川溫泉 → 由布院 → 別府 → 中津 → 福岡・博多，太宰府與柳川為當日順遊"
+          alt="九州自駕路線示意圖：熊本 → 天草 → 阿蘇 → 由布院 → 別府 → 九重夢大吊橋 → 福岡・博多，中間繞經太宰府與糸島・二見ヶ浦"
           width={900}
           height={655}
           decoding="async"

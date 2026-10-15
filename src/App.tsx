@@ -7,6 +7,7 @@ type BIPEvent = Event & {
 }
 
 const photoUrl = (slug: string) => `${import.meta.env.BASE_URL}photos/${slug}.jpg`
+const routeMapUrl = `${import.meta.env.BASE_URL}map/kyushu-route.png`
 
 /** 把 **粗體** 與換行轉成節點。 */
 function RichText({ text }: { text: string }) {
@@ -157,15 +158,16 @@ export default function App() {
         </div>
       </header>
 
-      <section className="stats">
-        {trip.stats.map((s) => (
-          <div className="stat" key={s.k}>
-            <span className="sk">{s.k}</span>
-            <span className="sv">{s.v}</span>
-            {s.n && <span className="sn">{s.n}</span>}
-          </div>
-        ))}
-      </section>
+      <figure className="routemap">
+        <img
+          src={routeMapUrl}
+          alt="九州自駕路線示意圖：熊本 → 阿蘇 → 黑川溫泉 → 由布院 → 別府 → 中津 → 福岡・博多，太宰府與柳川為當日順遊"
+          width={900}
+          height={655}
+          decoding="async"
+        />
+        <figcaption>路線示意圖・未依實際比例</figcaption>
+      </figure>
 
       <section className="panel">
         <h2 className="ptitle">行前提醒</h2>

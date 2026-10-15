@@ -87,6 +87,7 @@ function DayPanel({ day }: { day: Day }) {
 export default function App() {
   // 一次只看一天；沒點任何日期時，日期按鈕下方不顯示任何行程。
   const [selected, setSelected] = useState<string | null>(null)
+  const [openNotice, setOpenNotice] = useState<string | null>(null)
   const [installEvt, setInstallEvt] = useState<BIPEvent | null>(null)
   const [online, setOnline] = useState(true)
   const navRef = useRef<HTMLElement | null>(null)
@@ -129,6 +130,7 @@ export default function App() {
 
   const totalStops = trip.days.reduce((n, d) => n + d.stops.length, 0)
   const current = trip.days.find((d) => d.id === selected) ?? null
+  const notice = trip.notices.find((g) => g.tag === openNotice) ?? null
 
   return (
     <div className="page">
@@ -167,23 +169,37 @@ export default function App() {
 
       <section className="panel">
         <h2 className="ptitle">行前提醒</h2>
-        <div className="callouts">
-          {trip.callouts.map((c, i) => (
-            <details className="callout" key={i}>
-              <summary>
-                <span className="ctag">{c.tag}</span>
-                <span className="cnum">{c.items.length} 則</span>
-              </summary>
-              <ul>
-                {c.items.map((it, j) => (
-                  <li key={j}>
-                    <RichText text={it} />
-                  </li>
-                ))}
-              </ul>
-            </details>
+
+        <nav className="noticenav" aria-label="選擇要看哪一類提醒">
+          {trip.notices.map((g) => (
+            <button
+              key={g.tag}
+              className={`noticebtn${openNotice === g.tag ? ' on' : ''}`}
+              onClick={() =>
+                setOpenNotice((prev) => (prev === g.tag ? null : g.tag))
+              }
+              aria-pressed={openNotice === g.tag}
+            >
+              <span className="nbname">{g.tag}</span>
+              <span className="nbnum">
+                {g.items.length ? `${g.items.length} 則` : '待補'}
+              </span>
+            </button>
           ))}
-        </div>
+        </nav>
+
+        {notice &&
+          (notice.items.length > 0 ? (
+            <ul className="noticelist">
+              {notice.items.map((it, i) => (
+                <li key={i}>
+                  <RichText text={it} />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="noticeempty">這一類還沒有內容</p>
+          ))}
       </section>
 
       <section className="panel">

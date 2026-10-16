@@ -1,9 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { trip, type Day, type Notice, type Packing } from './trip'
-
-/** 一類提醒底下的條目總數（有些類別會再分「租車／住宿／其他」幾個小段）。 */
-const noticeTotal = (n: Notice) =>
-  n.groups.reduce((sum, g) => sum + g.items.length, 0)
+import { trip, type Day, type Packing } from './trip'
 
 type BIPEvent = Event & {
   prompt: () => Promise<void>
@@ -313,9 +309,9 @@ export default function App() {
       {trip.packing && <PackingPanel pack={trip.packing} />}
 
       <section className="panel">
-        <h2 className="ptitle">行前提醒</h2>
+        <h2 className="ptitle">行前確認</h2>
 
-        <nav className="noticenav" aria-label="選擇要看哪一類提醒">
+        <nav className="noticenav" aria-label="選擇要看哪一類確認事項">
           {trip.notices.map((g) => (
             <button
               key={g.tag}
@@ -329,26 +325,21 @@ export default function App() {
             >
               <span className="nbname">{g.tag}</span>
               <span className="nbnum">
-                {noticeTotal(g) ? `${noticeTotal(g)} 則` : '待補'}
+                {g.items.length ? `${g.items.length} 則` : '待補'}
               </span>
             </button>
           ))}
         </nav>
 
         {notice &&
-          (noticeTotal(notice) > 0 ? (
-            notice.groups.map((grp, gi) => (
-              <div className="noticegroup" key={gi}>
-                {grp.sub && <p className="noticesub">{grp.sub}</p>}
-                <ul className="noticelist">
-                  {grp.items.map((it, i) => (
-                    <li key={i}>
-                      <RichText text={it} />
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))
+          (notice.items.length > 0 ? (
+            <ul className="noticelist">
+              {notice.items.map((it, i) => (
+                <li key={i}>
+                  <RichText text={it} />
+                </li>
+              ))}
+            </ul>
           ) : (
             <p className="noticeempty">這一類還沒有內容</p>
           ))}

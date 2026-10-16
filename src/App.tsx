@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { trip, type Day } from './trip'
+import { trip, type Day, type Packing } from './trip'
 
 type BIPEvent = Event & {
   prompt: () => Promise<void>
@@ -107,6 +107,101 @@ function DayPanel({ day }: { day: Day }) {
   )
 }
 
+const PACK_KEY = 'kyushu-packing-v1'
+
+/** 出國行李懶人包：A、B 是規定，C 是可以打勾的隨身包包清單。 */
+function PackingPanel({ pack }: { pack: Packing }) {
+  // 勾選只存在這支手機，各家手機互不影響；也不會回傳到筆記。
+  const [done, setDone] = useState<Record<string, boolean>>(() => {
+    try {
+      const raw = localStorage.getItem(PACK_KEY)
+      return raw ? (JSON.parse(raw) as Record<string, boolean>) : {}
+    } catch {
+      return {}
+    }
+  })
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(PACK_KEY, JSON.stringify(done))
+    } catch {
+      /* 無痕模式等情況就只是不記住，不影響看 */
+    }
+  }, [done])
+
+  const all = pack.blocks.flatMap((b) => b.checks)
+  const checked = all.filter((c) => done[c]).length
+
+  return (
+    <section className="panel packpanel" aria-label={pack.title}>
+      <h2 className="ptitle packtitle">{pack.title}</h2>
+      <div className="packcard">
+        {pack.blocks.map((b, i) => (
+          <div className="packblock" key={i}>
+            <div className="packhead">
+              {b.code && <span className="pcode">{b.code}</span>}
+              <span>{b.label}</span>
+            </div>
+            {b.sub && <p className="packsub">{b.sub}</p>}
+
+            {b.warnings.length > 0 && (
+              <ul className="warnlist">
+                {b.warnings.map((w, j) => (
+                  <li key={j}>
+                    <span className="wn" aria-hidden="true">
+                      ⚠
+                    </span>
+                    <span>{w}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {b.checks.length > 0 && (
+              <>
+                <ul className="checklist">
+                  {b.checks.map((c) => {
+                    const on = !!done[c]
+                    return (
+                      <li key={c}>
+                        <button
+                          type="button"
+                          className={`chk${on ? ' on' : ''}`}
+                          aria-pressed={on}
+                          onClick={() =>
+                            setDone((d) => ({ ...d, [c]: !d[c] }))
+                          }
+                        >
+                          <span className="box" aria-hidden="true">
+                            {on ? '✓' : ''}
+                          </span>
+                          <span className="ctext">{c}</span>
+                        </button>
+                      </li>
+                    )
+                  })}
+                </ul>
+                <div className="checkfoot">
+                  <span className="chkcount">
+                    已勾 {checked} / {all.length}
+                  </span>
+                  <button
+                    type="button"
+                    className="clearall"
+                    onClick={() => setDone({})}
+                  >
+                    全部取消
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
 export default function App() {
   // 一次只看一天；沒點任何日期時，日期按鈕下方不顯示任何行程。
   const [selected, setSelected] = useState<string | null>(null)
@@ -192,6 +287,8 @@ export default function App() {
         />
         <figcaption>路線示意圖・未依實際比例</figcaption>
       </figure>
+
+      {trip.packing && <PackingPanel pack={trip.packing} />}
 
       <section className="panel">
         <h2 className="ptitle">行前提醒</h2>

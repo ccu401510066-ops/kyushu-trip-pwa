@@ -4,10 +4,13 @@ export type Callout = { tag: string; items: string[] }
 export type Day = { id: string; date: string; short: string; title: string; meta: string; stops: Stop[]; move: string; fallbacks: Callout | null }
 export type Stat = { k: string; v: string; n: string }
 export type Notice = { tag: string; items: string[]; highlight?: boolean }
+export type PackBlock = { code: string; label: string; sub: string; warnings: string[]; checks: string[] }
+export type Packing = { title: string; blocks: PackBlock[] }
 export type Trip = {
   eyebrow: string
   title: string
   lede: string
+  packing: Packing | null
   stats: Stat[]
   notices: Notice[]
   days: Day[]
@@ -18,6 +21,48 @@ export const trip: Trip = {
   "eyebrow": "九州・家族自駕",
   "title": "九州八天七夜自駕：熊本進福岡出，2027/1/22–1/29",
   "lede": "6 位大人。高雄虎航直飛熊本進、福岡出，1/22–1/29 共八天七夜：第 1 天搭空港リムジンバス進熊本市區（不開車），第 2 天早上在熊本駅前取 2 台車、先去天草一日遊，之後熊本市區 → 阿蘇 → 由布院 → 別府 → 福岡全線自駕。行程以參觀溫泉地為主、不使用浴場，住宿以商務飯店為主（每晚安 3 間雙人房），**只有由布院 1 晚是獨棟住宅、附自家獨立溫泉的包棟民宿**。",
+  "packing": {
+    "title": "🎒出國行李懶人包",
+    "blocks": [
+      {
+        "code": "A",
+        "label": "托運行李（大行李箱）",
+        "sub": "衣物類、盥洗用品、雜物類",
+        "warnings": [
+          "限重：＿＿＿公斤",
+          "液體限制：單一容器 ≦500mL，總容量限 2L 以下",
+          "禁放行動電源",
+          "其餘裝電池的電器，把電池拔下來隨身"
+        ],
+        "checks": []
+      },
+      {
+        "code": "B",
+        "label": "隨身行李－可登機的小行李箱",
+        "sub": "",
+        "warnings": [
+          "液體限制：單一容器 ≦100mL，全部裝進容量不超過 1L 的透明夾鏈袋",
+          "體積：20 吋以下，長 × 寬 × 高不超過 54 × 38 × 23 公分為原則",
+          "重量：不超過 7 公斤為原則"
+        ],
+        "checks": []
+      },
+      {
+        "code": "C",
+        "label": "隨身行李－登機的隨身包包",
+        "sub": "",
+        "warnings": [],
+        "checks": [
+          "錢包（身份證件、現金、信用卡）",
+          "護照、登機證、機票",
+          "手機、手錶、行動電源、家裡鑰匙",
+          "暈機藥",
+          "外套、手套、圍巾",
+          "駕照正本＋日文譯本"
+        ]
+      }
+    ]
+  },
   "stats": [
     {
       "k": "同行人數",
@@ -51,11 +96,6 @@ export const trip: Trip = {
     }
   ],
   "notices": [
-    {
-      "tag": "出國行李懶人包",
-      "items": [],
-      "highlight": true
-    },
     {
       "tag": "行前必辦",
       "items": [

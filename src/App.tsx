@@ -109,7 +109,7 @@ function DayPanel({ day }: { day: Day }) {
 
 const PACK_KEY = 'kyushu-packing-v1'
 
-/** 出國行李懶人包：A、B 是規定，C 是可以打勾的隨身包包清單。 */
+/** 出國行李懶人包：三個頁籤切換，A 隨身包包（可打勾）、B 登機箱、C 托運行李。 */
 function PackingPanel({ pack }: { pack: Packing }) {
   // 勾選只存在這支手機，各家手機互不影響；也不會回傳到筆記。
   const [done, setDone] = useState<Record<string, boolean>>(() => {
@@ -129,24 +129,42 @@ function PackingPanel({ pack }: { pack: Packing }) {
     }
   }, [done])
 
-  const all = pack.blocks.flatMap((b) => b.checks)
+  // 三個頁籤：預設停在 A 隨身包包，也就是唯一要動手勾的那一類。
+  const [tab, setTab] = useState(0)
+  const cur = pack.blocks[tab] ?? pack.blocks[0]
+  const all = cur ? cur.checks : []
   const checked = all.filter((c) => done[c]).length
 
   return (
     <section className="panel packpanel" aria-label={pack.title}>
       <h2 className="ptitle packtitle">{pack.title}</h2>
-      <div className="packcard">
+      <div className="packtabs" role="tablist" aria-label="行李分類">
         {pack.blocks.map((b, i) => (
-          <div className="packblock" key={i}>
+          <button
+            key={b.code}
+            type="button"
+            role="tab"
+            aria-selected={i === tab}
+            className={`ptab${i === tab ? ' on' : ''}`}
+            onClick={() => setTab(i)}
+          >
+            <span className="ptabcode">{b.code}</span>
+            <span className="ptablabel">{b.short}</span>
+          </button>
+        ))}
+      </div>
+      <div className="packcard">
+        {cur && (
+          <div className="packblock">
             <div className="packhead">
-              {b.code && <span className="pcode">{b.code}</span>}
-              <span>{b.label}</span>
+              {cur.code && <span className="pcode">{cur.code}</span>}
+              <span>{cur.label}</span>
             </div>
-            {b.sub && <p className="packsub">{b.sub}</p>}
+            {cur.sub && <p className="packsub">{cur.sub}</p>}
 
-            {b.warnings.length > 0 && (
+            {cur.warnings.length > 0 && (
               <ul className="warnlist">
-                {b.warnings.map((w, j) => (
+                {cur.warnings.map((w, j) => (
                   <li key={j}>
                     <span className="wn" aria-hidden="true">
                       ⚠
@@ -157,10 +175,10 @@ function PackingPanel({ pack }: { pack: Packing }) {
               </ul>
             )}
 
-            {b.checks.length > 0 && (
+            {cur.checks.length > 0 && (
               <>
                 <ul className="checklist">
-                  {b.checks.map((c) => {
+                  {cur.checks.map((c) => {
                     const on = !!done[c]
                     return (
                       <li key={c}>
@@ -196,7 +214,7 @@ function PackingPanel({ pack }: { pack: Packing }) {
               </>
             )}
           </div>
-        ))}
+        )}
       </div>
     </section>
   )

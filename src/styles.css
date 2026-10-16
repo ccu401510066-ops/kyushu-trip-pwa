@@ -281,6 +281,62 @@ body {
   color: #b4530f;
 }
 
+.packtabs {
+  display: flex;
+  gap: 6px;
+  margin: 10px 0 12px;
+}
+
+.ptab {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 9px 6px;
+  border: 1px solid #f0d3b8;
+  border-radius: 9px;
+  background: #f7ece1;
+  color: #9a7554;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ptab.on {
+  background: #e07b39;
+  border-color: #e07b39;
+  color: #fff;
+}
+
+.ptabcode {
+  flex: none;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: #e6b184;
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ptab.on .ptabcode {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.ptablabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .packcard {
   background: #fff8f2;
   border: 1px solid #f0d3b8;

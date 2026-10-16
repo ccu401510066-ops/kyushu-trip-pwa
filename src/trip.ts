@@ -4,7 +4,7 @@ export type Callout = { tag: string; items: string[] }
 export type Day = { id: string; date: string; short: string; title: string; meta: string; stops: Stop[]; move: string; fallbacks: Callout | null }
 export type Stat = { k: string; v: string; n: string }
 export type Notice = { tag: string; items: string[]; highlight?: boolean }
-export type PackBlock = { code: string; label: string; sub: string; warnings: string[]; checks: string[] }
+export type PackBlock = { code: string; short: string; label: string; sub: string; warnings: string[]; checks: string[] }
 export type Packing = { title: string; blocks: PackBlock[] }
 export type Trip = {
   eyebrow: string
@@ -26,29 +26,7 @@ export const trip: Trip = {
     "blocks": [
       {
         "code": "A",
-        "label": "托運行李（大行李箱）",
-        "sub": "衣物類、盥洗用品、雜物類",
-        "warnings": [
-          "限重：＿＿＿公斤",
-          "液體限制：單一容器 ≦500mL，總容量限 2L 以下",
-          "禁放行動電源",
-          "其餘裝電池的電器，把電池拔下來隨身"
-        ],
-        "checks": []
-      },
-      {
-        "code": "B",
-        "label": "隨身行李－可登機的小行李箱",
-        "sub": "",
-        "warnings": [
-          "液體限制：單一容器 ≦100mL，全部裝進容量不超過 1L 的透明夾鏈袋",
-          "體積：20 吋以下，長 × 寬 × 高不超過 54 × 38 × 23 公分為原則",
-          "重量：不超過 7 公斤為原則"
-        ],
-        "checks": []
-      },
-      {
-        "code": "C",
+        "short": "隨身包包",
         "label": "隨身行李－登機的隨身包包",
         "sub": "",
         "warnings": [],
@@ -60,6 +38,31 @@ export const trip: Trip = {
           "外套、手套、圍巾",
           "駕照正本＋日文譯本"
         ]
+      },
+      {
+        "code": "B",
+        "short": "登機箱",
+        "label": "隨身行李－可登機的小行李箱",
+        "sub": "",
+        "warnings": [
+          "液體限制：單一容器 ≦100mL，全部裝進容量不超過 1L 的透明夾鏈袋",
+          "體積：20 吋以下，長 × 寬 × 高不超過 54 × 38 × 23 公分為原則",
+          "重量：不超過 7 公斤為原則"
+        ],
+        "checks": []
+      },
+      {
+        "code": "C",
+        "short": "托運行李",
+        "label": "托運行李（大行李箱）",
+        "sub": "衣物類、盥洗用品、雜物類",
+        "warnings": [
+          "限重：＿＿＿公斤",
+          "液體限制：單一容器 ≦500mL，總容量限 2L 以下",
+          "禁放行動電源",
+          "其餘裝電池的電器，把電池拔下來隨身"
+        ],
+        "checks": []
       }
     ]
   },

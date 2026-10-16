@@ -495,6 +495,19 @@ body {
 
 /* ---------- 行前提醒清單 ---------- */
 
+/* 一類提醒可以再分幾個小段（例：行前確認分成租車／住宿／其他）。 */
+.noticesub {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--navy);
+  margin: 0 0 7px 2px;
+}
+
+.noticegroup + .noticegroup {
+  margin-top: 16px;
+}
+
 .noticelist {
   background: var(--card);
   border: 1px solid var(--line);

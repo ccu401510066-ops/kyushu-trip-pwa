@@ -174,7 +174,7 @@ export const trip: Trip = {
         ]
       },
       "date": "1/22",
-      "short": "熊本"
+      "short": "高雄→熊本"
     },
     {
       "id": "D2",
@@ -224,12 +224,12 @@ export const trip: Trip = {
         ]
       },
       "date": "1/23",
-      "short": "天草"
+      "short": "熊本⇄天草"
     },
     {
       "id": "D3",
       "title": "阿蘇破火山口，越やまなみ到由布院",
-      "meta": "1/24（日）｜起床 06:30｜熊本市區 → 阿蘇 → やまなみ → 由布院｜自駕約 170 km｜宿 由布院「YUFU-INN 藤・松」（兩臥室房屋・私人溫泉，第 1 晚）｜負荷 ★★★★☆ 高",
+      "meta": "1/24（日）｜起床 06:30｜熊本市區 → 阿蘇 → やまなみ → 由布院｜自駕約 170 km｜宿 由布院「YUFU-INN 藤・松」（兩臥室房屋・私人溫泉）｜負荷 ★★★★☆ 高",
       "stops": [
         {
           "name": "草千里濱",
@@ -286,12 +286,12 @@ export const trip: Trip = {
         ]
       },
       "date": "1/24",
-      "short": "由布院"
+      "short": "熊本→由布院"
     },
     {
       "id": "D4",
       "title": "由布院晨霧與湯之坪，午後移往別府",
-      "meta": "1/25（一）｜起床 07:00｜由布院 → 別府｜自駕約 55 km｜宿 別府「U&T House」（獨棟房屋，第 1 晚）｜負荷 ★★☆☆☆ 低",
+      "meta": "1/25（一）｜起床 07:00｜由布院 → 別府｜自駕約 55 km｜宿 別府「U&T House」（獨棟房屋）｜負荷 ★★☆☆☆ 低",
       "stops": [
         {
           "name": "金鱗湖（清晨的霧）",
@@ -340,7 +340,7 @@ export const trip: Trip = {
         ]
       },
       "date": "1/25",
-      "short": "別府"
+      "short": "由布院→別府"
     },
     {
       "id": "D5",
@@ -386,7 +386,7 @@ export const trip: Trip = {
         ]
       },
       "date": "1/26",
-      "short": "九重"
+      "short": "別府→福岡"
     },
     {
       "id": "D6",
@@ -442,7 +442,7 @@ export const trip: Trip = {
         ]
       },
       "date": "1/27",
-      "short": "糸島"
+      "short": "福岡⇄糸島"
     },
     {
       "id": "D7",
@@ -498,7 +498,7 @@ export const trip: Trip = {
         ]
       },
       "date": "1/28",
-      "short": "福岡"
+      "short": "福岡市區"
     },
     {
       "id": "D8",
@@ -548,7 +548,7 @@ export const trip: Trip = {
       ],
       "fallbacks": null,
       "date": "1/29",
-      "short": "返台"
+      "short": "福岡→高雄"
     }
   ],
   "credit": "照片來源：Wikimedia Commons（自由授權圖片）。部分景點（湯霧展望台等）無合適的公開授權照片，以同地最具代表性的景觀照替代，並於圖說標明。"

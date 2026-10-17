@@ -75,18 +75,21 @@ function DayPanel({ day }: { day: Day }) {
                 <h4>{stop.name}</h4>
                 {stop.time && <span className="stime">{stop.time}</span>}
               </div>
-              <RichText text={stop.body} />
+              {stop.body && <RichText text={stop.body} />}
+              {stop.notes.length > 0 && (
+                <ul className="stopnotes">
+                  {stop.notes.map((note, j) => (
+                    <li key={j}>
+                      <span className="snote">提醒</span>
+                      <Inline text={note} />
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </li>
         ))}
       </ol>
-
-      {day.move && (
-        <div className="moveblock">
-          <span className="mtag">這天怎麼開</span>
-          <RichText text={day.move} />
-        </div>
-      )}
 
       {day.fallbacks && (
         <details className="callout fb">

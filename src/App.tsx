@@ -305,12 +305,14 @@ export default function App() {
       <figure className="routemap">
         <img
           src={routeMapUrl}
-          alt="九州自駕路線示意圖：熊本 → 天草 → 阿蘇 → 由布院 → 別府 → 九重夢大吊橋 → 福岡・博多，中間繞經太宰府與糸島・二見ヶ浦"
+          alt="九州自駕路線示意圖：熊本 → 阿蘇 → 由布院（別府當天來回）→ 九重夢大吊橋 → 太宰府 → 福岡・博多（柳川當天來回），圓圈數字是行程順序"
           width={900}
-          height={655}
+          height={720}
           decoding="async"
         />
-        <figcaption>路線示意圖・未依實際比例</figcaption>
+        <figcaption>
+          路線示意圖・未依實際比例　實線＝移動日、虛線＝當天來回
+        </figcaption>
       </figure>
 
       {trip.packing && <PackingPanel pack={trip.packing} />}

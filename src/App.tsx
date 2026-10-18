@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { trip, type Day, type Packing } from './trip'
+import { APP_VERSION, UPDATED_AT } from './version'
 
 type BIPEvent = Event & {
   prompt: () => Promise<void>
@@ -295,6 +296,9 @@ export default function App() {
               安裝到主畫面
             </button>
           )}
+          <span className="badge ver" title="依行程筆記產生的版本">
+            {APP_VERSION} · {UPDATED_AT} 更新
+          </span>
         </div>
       </header>
 

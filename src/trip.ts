@@ -20,7 +20,7 @@ export type Trip = {
 export const trip: Trip = {
   "eyebrow": "九州・家族自駕",
   "title": "九州八天七夜自駕之旅",
-  "lede": "6 位大人。1/22 高雄→熊本、1/29 福岡→高雄。熊本住 2 晚、由布院 2 晚、福岡 3 晚，D3 才取車。",
+  "lede": "6 位大人。1/22 高雄→熊本、1/29 福岡→高雄。",
   "packing": {
     "title": "🎒出國行李懶人包",
     "blocks": [

@@ -753,6 +753,15 @@ body {
   padding-top: 18px;
 }
 
+/* 行程中的交通卡：夾在兩個景點之間 */
+.leg {
+  list-style: none;
+}
+
+.leg .transit {
+  margin: 0;
+}
+
 .stopimg {
   border-radius: 10px;
   overflow: hidden;

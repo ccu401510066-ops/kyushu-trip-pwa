@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { trip, type Day, type Packing, type Transit } from './trip'
 import { APP_VERSION, UPDATED_AT } from './version'
 
@@ -72,9 +72,11 @@ function TransitCard({ t }: { t: Transit }) {
           </div>
         ))}
       </div>
-      <div className="tnote">
-        <RichText text={t.note} />
-      </div>
+      {t.note && (
+        <div className="tnote">
+          <RichText text={t.note} />
+        </div>
+      )}
     </section>
   )
 }
@@ -98,28 +100,40 @@ function DayPanel({ day }: { day: Day }) {
 
       <ol className="stops">
         {day.stops.map((stop, i) => (
-          <li className="stop" key={i}>
-            <div className="stopimg">
-              <img src={photoUrl(stop.photo)} alt={stop.name} loading="lazy" />
-            </div>
-            <div className="stoptext">
-              <div className="stoptop">
-                <h4>{stop.name}</h4>
-                {stop.time && <span className="stime">{stop.time}</span>}
+          <Fragment key={i}>
+            {stop.transitBefore && (
+              <li className="leg">
+                <TransitCard t={stop.transitBefore} />
+              </li>
+            )}
+            <li className="stop">
+              <div className="stopimg">
+                <img src={photoUrl(stop.photo)} alt={stop.name} loading="lazy" />
               </div>
-              {stop.body && <RichText text={stop.body} />}
-              {stop.notes.length > 0 && (
-                <ul className="stopnotes">
-                  {stop.notes.map((note, j) => (
-                    <li key={j}>
-                      <span className="snote">提醒</span>
-                      <Inline text={note} />
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </li>
+              <div className="stoptext">
+                <div className="stoptop">
+                  <h4>{stop.name}</h4>
+                  {stop.time && <span className="stime">{stop.time}</span>}
+                </div>
+                {stop.body && <RichText text={stop.body} />}
+                {stop.notes.length > 0 && (
+                  <ul className="stopnotes">
+                    {stop.notes.map((note, j) => (
+                      <li key={j}>
+                        <span className="snote">提醒</span>
+                        <Inline text={note} />
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </li>
+            {stop.transitAfter && (
+              <li className="leg">
+                <TransitCard t={stop.transitAfter} />
+              </li>
+            )}
+          </Fragment>
         ))}
       </ol>
 

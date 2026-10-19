@@ -1,8 +1,8 @@
 // 由九州行程筆記自動產出，請勿手改。
-export type Stop = { name: string; time: string; body: string; notes: string[]; photo: string }
+export type Stop = { name: string; time: string; body: string; notes: string[]; photo: string; transitBefore?: Transit; transitAfter?: Transit }
 export type Callout = { tag: string; items: string[] }
 export type TransitFig = { k: string; v: string; n: string }
-export type Transit = { kicker: string; from: string; to: string; romaji: string; figs: TransitFig[]; note: string }
+export type Transit = { kicker: string; from: string; to: string; romaji: string; figs: TransitFig[]; note?: string }
 export type Day = { id: string; date: string; short: string; title: string; meta: string; stops: Stop[]; fallbacks: Callout | null; transit?: Transit }
 export type Stat = { k: string; v: string; n: string }
 export type Notice = { tag: string; items: string[]; highlight?: boolean }
@@ -184,15 +184,15 @@ export const trip: Trip = {
     },
     {
       "id": "D2",
-      "title": "熊本市區一日：熊本城、城彩苑與藤崎八幡宮",
-      "meta": "1/23（六）｜起床 07:30｜熊本市區（市電＋步行，不開車）｜宿 KOKO HOTEL 熊本上通（第 2 晚）｜負荷 ★★☆☆☆ 低",
+      "title": "熊本市區一日：熊本城、城彩苑、八幡宮與水前寺",
+      "meta": "1/23（六）｜起床 07:30｜熊本市區（步行＋市電）｜宿 KOKO HOTEL 熊本上通（第 2 晚）｜負荷 ★★☆☆☆ 低",
       "stops": [
         {
           "name": "熊本城",
           "time": "09:30–11:30",
           "body": "值得看：2016 年熊本地震重創後，天守閣已於 2021 年完整復原，可一路登上最上層展望台俯瞰整個熊本市。城旁的二之丸廣場是免費區，也是拍「大小天守同框」的經典角度。門票大人 ¥800；9:00–17:00，最後入園 16:00。",
           "notes": [
-            "從飯店走到市電「水道町」，搭一站到「熊本城・市役所前」（均一 ¥200），再走約 10 分進城——**今天不開車，不必找車位**。週六上午人潮多，**09:30 前進場**最舒服。",
+            "從飯店步行到熊本城約 18 分：走上通拱廊往北，接到桜の馬場・城彩苑一帶再上坡進城——**這一段全程走路，不搭市電**。週六上午人潮多，**09:30 前進場**最舒服。",
             "天守閣要一路往上爬，鞋穿好走的；1 月城內風大，帽子、圍巾帶著。"
           ],
           "photo": "kumamoto-castle"
@@ -209,20 +209,47 @@ export const trip: Trip = {
         {
           "name": "藤崎八幡宮",
           "time": "13:40–14:20",
-          "body": "值得看：熊本總鎮守，創建約 1,100 年，境內古木參天，是熊本市區最安靜的一座神社。每年 9 月的「隨兵行列」是熊本最大的祭典。**從城彩苑走過去約 1.5 公里、20–25 分**，沿白川走天氣好時很舒服；不想走就搭市電到「藤崎宮前」徒步 5 分。",
+          "body": "值得看：熊本總鎮守，創建約 1,100 年，境內古木參天，是熊本市區最安靜的一座神社。每年 9 月的「隨兵行列」是熊本最大的祭典。**從城彩苑走過去約 1.5 公里、20–25 分**，沿白川走天氣好時很舒服。",
           "notes": [
-            "免費、境內自由參拜。**14:20 之後就回飯店**——下午刻意留白：休息、補貨、洗衣服。**明天開始連三天開車跑長途**，今天不要太累。"
+            "免費、境內自由參拜。**14:20 離開，步行約 20 分回「水道町」搭市電**。"
           ],
           "photo": "fujisaki-hachimangu"
+        },
+        {
+          "name": "水前寺成趣園",
+          "time": "15:00–16:10",
+          "body": "值得看：桃山式回遊庭園，以阿蘇湧水築池、假山仿「東海道五十三次」的縮景，是熊本最經典的一座庭園。「古今傳授之間」相傳細川藤孝曾在此講授古今和歌集。入園大人 ¥500、08:30–17:00（最終入園 16:30）；園內另有免費的出水神社。",
+          "notes": [
+            "庭園繞一圈約 30–40 分，**16:10 前離開**。下午刻意留白：休息、補貨、洗衣服——**明天開始連三天開車跑長途**，今天不要太累。"
+          ],
+          "photo": "suizenji",
+          "transitBefore": {
+            "kicker": "熊本市電・去程",
+            "from": "水道町",
+            "to": "水前寺公園",
+            "romaji": "Suidocho → Suizenji-koen",
+            "figs": [
+              { "k": "票價", "v": "¥200", "n": "均一價・6 人共 ¥1,200" },
+              { "k": "車程", "v": "約 14 分", "n": "下車走 3 分到入口" },
+              { "k": "乘車處", "v": "水道町 電停", "n": "往健軍町方向的月台" },
+              { "k": "付款", "v": "交通卡・現金", "n": "上、下車各嗶一次；現金不找零" }
+            ]
+          },
+          "transitAfter": {
+            "kicker": "熊本市電・回程",
+            "from": "水前寺公園",
+            "to": "水道町",
+            "romaji": "Suizenji-koen → Suidocho",
+            "figs": [
+              { "k": "票價", "v": "¥200", "n": "均一價・6 人共 ¥1,200" },
+              { "k": "車程", "v": "約 14 分", "n": "下車走 2 分回飯店" },
+              { "k": "乘車處", "v": "水前寺公園 電停", "n": "對向月台・往熊本駅前方向" },
+              { "k": "付款", "v": "交通卡・現金", "n": "上、下車各嗶一次；現金不找零" }
+            ]
+          }
         }
       ],
-      "fallbacks": {
-        "tag": "備案",
-        "items": [
-          "**水前寺成趣園**：桃山式回遊庭園，以阿蘇湧水與「古今傳授之間」聞名，入園大人約 ¥500、08:30–17:00（最終入園 16:30），市電「水前寺公園」站徒步 3 分；園內另有免費的出水神社。**下午還有體力**就搭市電過去，約 1 小時。",
-          "**下雨**：熊本城改走室內的「わくわく座」，城彩苑本來就是室內；藤崎八幡宮可以縮短或直接回上通。"
-        ]
-      },
+      "fallbacks": null,
       "date": "1/23（六）",
       "short": "熊本市區"
     },

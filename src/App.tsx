@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { trip, type Day, type Packing } from './trip'
+import { trip, type Day, type Packing, type Transit } from './trip'
 import { APP_VERSION, UPDATED_AT } from './version'
 
 type BIPEvent = Event & {
@@ -50,6 +50,35 @@ function Inline({ text }: { text: string }) {
   )
 }
 
+/** 交通卡：沒有照片的路線資訊，放在當天行程最前面。 */
+function TransitCard({ t }: { t: Transit }) {
+  return (
+    <section className="transit" aria-label={`${t.from} 到 ${t.to}`}>
+      <p className="tkicker">{t.kicker}</p>
+      <h4 className="troute">
+        {t.from}
+        <span className="tarrow" aria-hidden="true">
+          →
+        </span>
+        {t.to}
+      </h4>
+      <p className="tromaji">{t.romaji}</p>
+      <div className="tfigs">
+        {t.figs.map((f, i) => (
+          <div className="tfig" key={i}>
+            <span className="tk">{f.k}</span>
+            <span className="tv">{f.v}</span>
+            <span className="tn">{f.n}</span>
+          </div>
+        ))}
+      </div>
+      <div className="tnote">
+        <RichText text={t.note} />
+      </div>
+    </section>
+  )
+}
+
 /** 選中那一天的完整內容。 */
 function DayPanel({ day }: { day: Day }) {
   return (
@@ -64,6 +93,8 @@ function DayPanel({ day }: { day: Day }) {
           ))}
         </div>
       </header>
+
+      {day.transit && <TransitCard t={day.transit} />}
 
       <ol className="stops">
         {day.stops.map((stop, i) => (

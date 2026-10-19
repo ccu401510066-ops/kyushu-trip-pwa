@@ -505,6 +505,91 @@ body {
   background: #fdeede;
 }
 
+/* ---------- 交通卡 ---------- */
+
+.transit {
+  margin: 0 0 4px;
+  padding: 14px 15px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--navy);
+  border-radius: var(--radius);
+}
+
+.tkicker {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+.troute {
+  margin: 4px 0 0;
+  font-size: 19px;
+  line-height: 1.35;
+  color: var(--navy-deep);
+}
+
+.tarrow {
+  margin: 0 8px;
+  font-weight: 400;
+  color: var(--navy);
+}
+
+.tromaji {
+  margin: 2px 0 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+
+.tfigs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.tfig {
+  padding: 8px 11px;
+  background: var(--sand);
+  border-radius: 9px;
+}
+
+.tk {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.tv {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.tn {
+  display: block;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.tnote {
+  margin-top: 11px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.tnote p {
+  margin: 0;
+}
+
 /* ---------- 行前確認清單 ---------- */
 
 .noticelist {

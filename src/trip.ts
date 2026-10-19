@@ -1,7 +1,9 @@
 // 由九州行程筆記自動產出，請勿手改。
 export type Stop = { name: string; time: string; body: string; notes: string[]; photo: string }
 export type Callout = { tag: string; items: string[] }
-export type Day = { id: string; date: string; short: string; title: string; meta: string; stops: Stop[]; fallbacks: Callout | null }
+export type TransitFig = { k: string; v: string; n: string }
+export type Transit = { kicker: string; from: string; to: string; romaji: string; figs: TransitFig[]; note: string }
+export type Day = { id: string; date: string; short: string; title: string; meta: string; stops: Stop[]; fallbacks: Callout | null; transit?: Transit }
 export type Stat = { k: string; v: string; n: string }
 export type Notice = { tag: string; items: string[]; highlight?: boolean }
 export type PackBlock = { code: string; short: string; label: string; sub: string; warnings: string[]; checks: string[] }
@@ -130,14 +132,15 @@ export const trip: Trip = {
     {
       "id": "D1",
       "title": "落地熊本，先安頓、慢慢逛上下通",
-      "meta": "1/22（五）｜起床 05:00｜高雄 KHH → 熊本 KMJ｜機場巴士進市區（約 50 分）｜不開車｜宿 KOKO HOTEL 熊本上通（第 1 晚）｜負荷 ★☆☆☆☆ 低",
+      "meta": "1/22（五）｜起床 05:00｜高雄 KHH → 熊本 KMJ｜利木津巴士進市區（約 50 分）｜不開車｜宿 KOKO HOTEL 熊本上通（第 1 晚）｜負荷 ★☆☆☆☆ 低",
+      "transit": {"kicker": "利木津巴士・空港リムジンバス", "from": "阿蘇くまもと空港", "to": "通町筋", "romaji": "Aso Kumamoto Airport → Torichosuji", "figs": [{"k": "票價", "v": "¥1,400", "n": "6 人共 ¥8,400"}, {"k": "車程", "v": "40–50 分", "n": "3 番特別快速 40 分・4 番一般 50 分"}, {"k": "乘車處", "v": "3・4 番のりば", "n": "入境大廳走出去就是，中午約 10 分一班"}], "note": "付款：售票機買票（現金），或直接上車、下車各感應一次信用卡；**Suica 等交通卡不能用**。大行李放車下行李艙；下車往回走 3 分鐘到 KOKO HOTEL。"},
       "stops": [
         {
           "name": "上下通商店街",
           "time": "15:30–",
           "body": "值得看：熊本最大的商業區，全區是**有頂拱廊**，下雨下雪都能逛。藥妝、電器、在地食堂密集，晚餐在這裡解決。**今天刻意不排景點**——落地、安頓、吃頓熱的，把體力留給明天開始的行程。",
           "notes": [
-            "11:50 抵達熊本機場，入境與領行李約 40–50 分；機場 4 號站牌搭空港リムジンバス到通町筋約 50 分（大人 ¥1,400），下車走到飯店只要 3 分鐘。**先寄放行李**（check-in 15:00 後），再出來逛。",
+            "11:50 落地，入境與領行李約 40–50 分；到飯店**先寄放行李**（check-in 15:00 後），再出來逛。",
             "**熊本熊廣場（くまモンスクエア）**就在上通「テトリアくまもと」1 樓，免費、10:00–19:00，從飯店徒步 3 分。**熊本熊登台有固定時段**，出發前查官網當日時刻表；時段剛好、或逛上下通時剛好遇上，順路進去就好。",
             "今天、明天都**不開車**（D3 早上才在熊本駅前取車），這幾天不需要擔心停車。"
           ],

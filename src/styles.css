@@ -753,6 +753,11 @@ body {
   padding-top: 18px;
 }
 
+/* 每日標題下的交通卡：與景點清單同一內縮 */
+.day > .transit {
+  margin: 0 16px;
+}
+
 /* 行程中的交通卡：夾在兩個景點之間 */
 .leg {
   list-style: none;

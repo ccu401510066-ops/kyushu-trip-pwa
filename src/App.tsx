@@ -113,7 +113,10 @@ function DayPanel({ day }: { day: Day }) {
               <div className="stoptext">
                 <div className="stoptop">
                   <h4>{stop.name}</h4>
-                  {stop.time && <span className="stime">{stop.time}</span>}
+                  <span className="stopmeta">
+                    {stop.time && <span className="stime">{stop.time}</span>}
+                    {stop.optional && <span className="sopt">可跳過</span>}
+                  </span>
                 </div>
                 {stop.body && <RichText text={stop.body} />}
                 {stop.notes.length > 0 && (

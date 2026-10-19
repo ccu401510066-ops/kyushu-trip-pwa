@@ -801,6 +801,13 @@ body {
   line-height: 1.45;
 }
 
+.stopmeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
 .stime {
   font-size: 12px;
   font-weight: 600;
@@ -810,6 +817,18 @@ body {
   padding: 3px 8px;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
+}
+
+/* 可視情況跳過的景點 */
+.sopt {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  background: #f0ece4;
+  border-radius: 999px;
+  padding: 2px 9px;
+  white-space: nowrap;
 }
 
 /* ---------- 景點下方的提醒 ---------- */

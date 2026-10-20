@@ -831,6 +831,76 @@ body {
   white-space: nowrap;
 }
 
+/* ---------- 班次時刻表 ---------- */
+
+.sched {
+  margin-top: 12px;
+  padding: 13px 15px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+}
+
+.schedhead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--navy);
+}
+
+.schedhead em {
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+
+.schedgrid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.schtime {
+  text-align: center;
+  padding: 6px 0;
+  border-radius: 7px;
+  background: var(--sand);
+  color: var(--muted);
+  font: 600 12.5px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.schtime.on {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 0 2px rgba(196, 85, 59, 0.22);
+}
+
+.schtime.off {
+  opacity: 0.42;
+  text-decoration: line-through;
+}
+
+.schednote {
+  margin: 11px 0 0;
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .schedgrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 /* ---------- 景點下方的提醒 ---------- */
 
 .stopnotes {

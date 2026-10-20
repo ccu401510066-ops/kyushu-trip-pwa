@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
-import { trip, type Day, type Packing, type Transit } from './trip'
+import { trip, type Day, type Packing, type Sched, type Transit } from './trip'
 import { APP_VERSION, UPDATED_AT } from './version'
 
 type BIPEvent = Event & {
@@ -81,6 +81,36 @@ function TransitCard({ t }: { t: Transit }) {
   )
 }
 
+/** 交通卡可能是單張或連續兩張（轉乘）。 */
+const asList = (t?: Transit | Transit[]): Transit[] => (!t ? [] : Array.isArray(t) ? t : [t])
+
+/** 班次時刻表：橘色標出預計搭乘的班次。 */
+function SchedBlock({ s }: { s: Sched }) {
+  return (
+    <section className="sched">
+      <div className="schedhead">
+        <span>{s.title}</span>
+        {s.aside && <em>{s.aside}</em>}
+      </div>
+      <div className="schedgrid">
+        {s.times.map((t) => (
+          <span
+            key={t}
+            className={`schtime${s.on === t ? ' on' : ''}${s.off?.includes(t) ? ' off' : ''}`}
+          >
+            {t}
+          </span>
+        ))}
+      </div>
+      {s.note && (
+        <p className="schednote">
+          <RichText text={s.note} />
+        </p>
+      )}
+    </section>
+  )
+}
+
 /** 選中那一天的完整內容。 */
 function DayPanel({ day }: { day: Day }) {
   return (
@@ -101,11 +131,11 @@ function DayPanel({ day }: { day: Day }) {
       <ol className="stops">
         {day.stops.map((stop, i) => (
           <Fragment key={i}>
-            {stop.transitBefore && (
-              <li className="leg">
-                <TransitCard t={stop.transitBefore} />
+            {asList(stop.transitBefore).map((t, k) => (
+              <li className="leg" key={`tb${k}`}>
+                <TransitCard t={t} />
               </li>
-            )}
+            ))}
             <li className="stop">
               <div className="stopimg">
                 <img src={photoUrl(stop.photo)} alt={stop.name} loading="lazy" />
@@ -129,13 +159,14 @@ function DayPanel({ day }: { day: Day }) {
                     ))}
                   </ul>
                 )}
+                {stop.sched && <SchedBlock s={stop.sched} />}
               </div>
             </li>
-            {stop.transitAfter && (
-              <li className="leg">
-                <TransitCard t={stop.transitAfter} />
+            {asList(stop.transitAfter).map((t, k) => (
+              <li className="leg" key={`ta${k}`}>
+                <TransitCard t={t} />
               </li>
-            )}
+            ))}
           </Fragment>
         ))}
       </ol>

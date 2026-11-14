@@ -393,7 +393,7 @@ export default function App() {
         <figure className="routemap">
           <img
             src={routeMapUrl}
-            alt="九州自駕路線插畫地圖：熊本、阿蘇、別府、由布院、九重夢大吊橋、太宰府、博多、柳川等景點與行進路線"
+            alt="九州自駕路線水彩插畫地圖：博多、南藏院、太宰府、柳川、由布院、大分、國東、九重夢大吊橋、阿蘇、熊本、九州自然動物園等景點與行進路線"
             width={1400}
             height={788}
             decoding="async"

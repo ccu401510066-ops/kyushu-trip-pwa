@@ -9,7 +9,7 @@ type BIPEvent = Event & {
 }
 
 const photoUrl = (slug: string) => `${import.meta.env.BASE_URL}photos/${slug}.jpg`
-const routeMapUrl = `${import.meta.env.BASE_URL}map/kyushu-route.png`
+const routeMapUrl = `${import.meta.env.BASE_URL}map/kyushu-route.jpg`
 
 /** 把 **粗體** 與換行轉成節點。 */
 function RichText({ text }: { text: string }) {
@@ -389,9 +389,9 @@ export default function App() {
       <figure className="routemap">
         <img
           src={routeMapUrl}
-          alt="九州自駕路線示意圖：熊本 → 阿蘇 → 由布院（別府當天來回）→ 九重夢大吊橋 → 太宰府 → 福岡・博多（柳川當天來回），圓圈數字是行程順序"
-          width={900}
-          height={720}
+          alt="九州自駕路線插畫地圖：熊本、阿蘇、別府、由布院、九重夢大吊橋、太宰府、博多、柳川等景點與行進路線"
+          width={1400}
+          height={788}
           decoding="async"
         />
         <figcaption>

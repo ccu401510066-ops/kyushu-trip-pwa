@@ -1,6 +1,7 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { trip, type Day, type Packing, type Sched, type Transit } from './trip'
 import { APP_VERSION, UPDATED_AT } from './version'
+import LedgerPage from './ledger'
 
 type BIPEvent = Event & {
   prompt: () => Promise<void>
@@ -309,6 +310,7 @@ export default function App() {
   const [openNotice, setOpenNotice] = useState<string | null>(null)
   const [installEvt, setInstallEvt] = useState<BIPEvent | null>(null)
   const [online, setOnline] = useState(true)
+  const [ledgerOpen, setLedgerOpen] = useState(false)
   const navRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
@@ -375,6 +377,9 @@ export default function App() {
               安裝到主畫面
             </button>
           )}
+          <button className="install" onClick={() => setLedgerOpen(true)}>
+            旅費記帳
+          </button>
           <span className="badge ver" title="依行程筆記產生的版本">
             {APP_VERSION} · {UPDATED_AT} 更新
           </span>
@@ -463,6 +468,8 @@ export default function App() {
           <RichText text={trip.credit} />
         </footer>
       )}
+
+      {ledgerOpen && <LedgerPage onClose={() => setLedgerOpen(false)} />}
     </div>
   )
 }

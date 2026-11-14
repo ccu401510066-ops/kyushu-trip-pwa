@@ -1,0 +1,8 @@
+name = "kyushu-ledger"
+main = "index.ts"
+compatibility_date = "2025-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "kyushu-ledger"
+database_id = "a5f692a4-432d-4810-8324-1fc3fad47385"

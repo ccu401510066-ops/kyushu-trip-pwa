@@ -357,8 +357,6 @@ function LedgerInner({ me, state, onRefresh, onLogout }: { me: Member; state: St
   }, [state.members])
 
   const totalTwd = state.expenses.reduce((n, e) => n + e.amountTwd, 0)
-  const totalJpy = state.expenses.filter((e) => e.currency === 'JPY').reduce((n, e) => n + e.amount, 0)
-  const activeCount = state.members.filter((m) => m.active).length
   const { bal, transfers } = useMemo(() => settlement(state.members, state.expenses), [state])
 
   const token = localStorage.getItem(TOKEN_KEY) ?? ''
@@ -416,10 +414,8 @@ function LedgerInner({ me, state, onRefresh, onLogout }: { me: Member; state: St
   return (
     <div className="lg-main">
       <div className="lg-summary">
-        <div className="lg-total">{twd(totalTwd)}</div>
-        <div className="lg-sub">
-          日圓 {jpy(totalJpy)}・匯率 {state.settings.rate}・每人平均 {twd(totalTwd / Math.max(activeCount, 1))}
-        </div>
+        <div className="lg-total">已登記 {twd(totalTwd)}</div>
+        <div className="lg-sub">日圓換算匯率 {state.settings.rate}</div>
       </div>
 
       <div className="lg-tabs">

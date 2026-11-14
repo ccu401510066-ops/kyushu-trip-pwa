@@ -121,13 +121,11 @@ function TransferDetail({
   to,
   names,
   expenses,
-  suggest,
 }: {
   from: string
   to: string
   names: Record<string, string>
   expenses: Expense[]
-  suggest: number
 }) {
   const share = (e: Expense) => e.amountTwd / e.shares.length
   const toForFrom = expenses.filter((e) => e.payerId === to && e.shares.includes(from))
@@ -135,7 +133,6 @@ function TransferDetail({
   const sumTo = toForFrom.reduce((n, e) => n + share(e), 0)
   const sumFrom = fromForTo.reduce((n, e) => n + share(e), 0)
   const diff = Math.round(sumTo - sumFrom)
-  const offBy = Math.round(suggest) - diff
 
   const rows = (list: Expense[], whoPays: string) =>
     list.length ? (
@@ -177,19 +174,36 @@ function TransferDetail({
 
       <div className="lg-dnet">
         <span>
-          兩人直接對帳：
+          這兩人單獨對帳：
           {diff >= 0 ? `${names[from]} 給 ${names[to]}` : `${names[to]} 給 ${names[from]}`}
         </span>
         <b>{twd(Math.abs(diff))}</b>
       </div>
 
-      {offBy !== 0 && (
-        <p className="lg-dnote">
-          上面建議轉帳 {twd(suggest)}，和兩人直接對帳差 {twd(Math.abs(offBy))}——因為把其他人的帳一起對沖掉了，實際轉帳照上面的數字就好。
-        </p>
-      )}
     </div>
   )
+}
+
+/** 只算「這兩個人之間」誰欠誰，完全不透過第三人對沖。 */
+function pairTransfers(members: Member[], expenses: Expense[]) {
+  const act = members.filter((m) => m.active)
+  const out: { from: string; to: string; amount: number }[] = []
+  for (let i = 0; i < act.length; i++) {
+    for (let j = i + 1; j < act.length; j++) {
+      const a = act[i].id
+      const b = act[j].id
+      let ab = 0 // 正數 = a 欠 b
+      for (const e of expenses) {
+        const share = e.amountTwd / e.shares.length
+        if (e.payerId === b && e.shares.includes(a)) ab += share
+        if (e.payerId === a && e.shares.includes(b)) ab -= share
+      }
+      const v = Math.round(ab)
+      if (v >= 1) out.push({ from: a, to: b, amount: v })
+      else if (v <= -1) out.push({ from: b, to: a, amount: -v })
+    }
+  }
+  return out.sort((x, y) => y.amount - x.amount)
 }
 
 function Login({ onDone }: { onDone: (token: string) => void }) {
@@ -422,6 +436,7 @@ function EditSheet({
 function LedgerInner({ me, state, onRefresh, onLogout }: { me: Member; state: State; onRefresh: () => void; onLogout: () => void }) {
   const [tab, setTab] = useState<'list' | 'settle' | 'admin'>('list')
   const [openKey, setOpenKey] = useState<string | null>(null)
+  const [mode, setMode] = useState<'pair' | 'merged'>('pair')
   const [editing, setEditing] = useState<Draft | null>(null)
   const [err, setErr] = useState('')
   const [busy, setBusy] = useState(false)
@@ -435,6 +450,7 @@ function LedgerInner({ me, state, onRefresh, onLogout }: { me: Member; state: St
 
   const totalTwd = state.expenses.reduce((n, e) => n + e.amountTwd, 0)
   const { bal, transfers } = useMemo(() => settlement(state.members, state.expenses), [state])
+  const pairs = useMemo(() => pairTransfers(state.members, state.expenses), [state])
 
   const token = localStorage.getItem(TOKEN_KEY) ?? ''
 
@@ -562,8 +578,24 @@ function LedgerInner({ me, state, onRefresh, onLogout }: { me: Member; state: St
       {tab === 'settle' && (
         <div className="lg-settle">
           <h3>誰該給誰</h3>
-          {transfers.length === 0 && <p className="lg-hint">目前不用轉帳，帳是平的。</p>}
-          {transfers.map((t, i) => {
+          <div className="lg-modeswitch">
+            <button type="button" className={mode === 'pair' ? 'on' : ''} onClick={() => { setMode('pair'); setOpenKey(null) }}>
+              兩兩對帳
+            </button>
+            <button type="button" className={mode === 'merged' ? 'on' : ''} onClick={() => { setMode('merged'); setOpenKey(null) }}>
+              合併最少筆數
+            </button>
+          </div>
+          <p className="lg-modehint">
+            {mode === 'pair'
+              ? '只算你們兩個人之間誰欠誰，每一筆都對得到共同花費。'
+              : '把互相欠的帳合併，轉帳次數最少；要看原始關係請切回「兩兩對帳」。'}
+          </p>
+
+          {(mode === 'pair' ? pairs : transfers).length === 0 && (
+            <p className="lg-hint">目前不用轉帳，帳是平的。</p>
+          )}
+          {(mode === 'pair' ? pairs : transfers).map((t, i) => {
             const key = `${t.from}-${t.to}`
             const open = openKey === key
             return (
@@ -586,12 +618,17 @@ function LedgerInner({ me, state, onRefresh, onLogout }: { me: Member; state: St
                     to={t.to}
                     names={names}
                     expenses={state.expenses}
-                    suggest={t.amount}
                   />
                 )}
               </div>
             )
           })}
+
+          <p className="lg-modehint">
+            {mode === 'pair'
+              ? `共 ${pairs.length} 筆——總金額會比合併後多，因為同一筆錢可能經過好幾手；每個人最後的淨額兩邊一樣。`
+              : `共 ${transfers.length} 筆`}
+          </p>
 
           <h3>每個人的淨額</h3>
           {state.members

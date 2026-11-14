@@ -409,3 +409,19 @@
   line-height: 1.6;
   color: var(--muted);
 }
+
+/* 結算：兩兩對帳 / 合併切換 */
+.lg-modeswitch { display: flex; gap: 6px; margin-bottom: 8px; }
+.lg-modeswitch button {
+  flex: 1;
+  padding: 8px 0;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  font: inherit;
+  font-size: 13.5px;
+  color: var(--muted);
+  cursor: pointer;
+}
+.lg-modeswitch button.on { background: var(--navy); border-color: var(--navy); color: #fff; font-weight: 700; }
+.lg-modehint { font-size: 12px; line-height: 1.6; color: var(--muted); margin: 0 0 12px; }

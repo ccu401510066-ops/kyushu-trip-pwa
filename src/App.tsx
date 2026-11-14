@@ -394,9 +394,6 @@ export default function App() {
           height={788}
           decoding="async"
         />
-        <figcaption>
-          路線示意圖・未依實際比例　實線＝移動日、虛線＝當天來回
-        </figcaption>
       </figure>
 
       {trip.packing && <PackingPanel pack={trip.packing} />}

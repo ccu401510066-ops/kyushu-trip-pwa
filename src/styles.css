@@ -152,14 +152,6 @@ body {
   height: auto;
 }
 
-.routemap figcaption {
-  padding: 9px 14px;
-  border-top: 1px solid var(--line);
-  font-size: 12px;
-  letter-spacing: 0.02em;
-  color: var(--muted);
-}
-
 /* ---------- Panel ---------- */
 
 .panel {

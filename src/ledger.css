@@ -327,6 +327,25 @@
 }
 .lg-logout { color: #b3261e; border-color: #f0c7c2; }
 
+/* 左下角固定「回行程」：手機拇指容易按到，不必跑到最上面 */
+.lg-back {
+  position: fixed;
+  left: 16px;
+  bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+  z-index: 65;
+  padding: 13px 20px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+  font: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--navy);
+  cursor: pointer;
+}
+.lg-back:active { transform: scale(0.97); }
+
 .lg-busy {
   position: fixed;
   left: 50%;

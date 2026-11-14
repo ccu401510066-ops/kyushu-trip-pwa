@@ -881,9 +881,6 @@ export default function LedgerPage({ onClose }: { onClose: () => void }) {
   return (
     <div className="lg-page">
       <header className="lg-top">
-        <button type="button" className="lg-text" onClick={onClose}>
-          ‹ 回行程
-        </button>
         <b>旅費記帳</b>
         <span className="lg-who">{state?.me.name ?? ''}</span>
       </header>
@@ -903,6 +900,10 @@ export default function LedgerPage({ onClose }: { onClose: () => void }) {
 
       {error && <p className="lg-err lg-floaterr">{error}</p>}
       {state && !state.me && <p className="lg-hint">請重新登入</p>}
+
+      <button type="button" className="lg-back" onClick={onClose}>
+        ‹ 回行程
+      </button>
     </div>
   )
 }

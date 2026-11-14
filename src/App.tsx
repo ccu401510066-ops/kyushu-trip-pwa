@@ -310,7 +310,8 @@ export default function App() {
   const [openNotice, setOpenNotice] = useState<string | null>(null)
   const [installEvt, setInstallEvt] = useState<BIPEvent | null>(null)
   const [online, setOnline] = useState(true)
-  const [ledgerOpen, setLedgerOpen] = useState(false)
+  // 底部頁籤：行程／旅費記帳。記帳是獨立一頁，不再蓋在行程上面，手機就不會滑到後面的行程。
+  const [tab, setTab] = useState<'trip' | 'ledger'>('trip')
   const navRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
@@ -335,6 +336,11 @@ export default function App() {
     setSelected((prev) => (prev === id ? null : id))
   }, [])
 
+  // 換頁籤時回到最上面，避免帶著上一頁的捲動位置。
+  useEffect(() => {
+    window.scrollTo({ top: 0 })
+  }, [tab])
+
   // 換到別天時，讓那天的標題剛好落在日期按鈕下方，不會被黏在上方的按鈕蓋住。
   useEffect(() => {
     if (!selected) return
@@ -354,119 +360,135 @@ export default function App() {
   const notice = trip.notices.find((g) => g.tag === openNotice) ?? null
 
   return (
-    <div className="page">
-      <header className="hero">
-        <p className="eyebrow">{trip.eyebrow}</p>
-        <h1>{mainTitle}</h1>
-        {subTitle && <p className="subtitle">{subTitle}</p>}
-        <p className="lede">
-          <Inline text={trip.lede} />
-        </p>
-        <div className="badges">
-          <span className={`badge ${online ? 'ok' : 'off'}`}>
-            {online ? '已連線' : '離線中・仍可查看'}
-          </span>
-          {installEvt && (
-            <button
-              className="install"
-              onClick={() => {
-                installEvt.prompt()
-                setInstallEvt(null)
-              }}
-            >
-              安裝到主畫面
-            </button>
-          )}
-          <button className="install" onClick={() => setLedgerOpen(true)}>
-            旅費記帳
-          </button>
-          <span className="badge ver" title="依行程筆記產生的版本">
-            {APP_VERSION} · {UPDATED_AT} 更新
-          </span>
-        </div>
-      </header>
+    <>
+      <div className={`page${tab === 'ledger' ? ' viewoff' : ''}`}>
+        <header className="hero">
+          <p className="eyebrow">{trip.eyebrow}</p>
+          <h1>{mainTitle}</h1>
+          {subTitle && <p className="subtitle">{subTitle}</p>}
+          <p className="lede">
+            <Inline text={trip.lede} />
+          </p>
+          <div className="badges">
+            <span className={`badge ${online ? 'ok' : 'off'}`}>
+              {online ? '已連線' : '離線中・仍可查看'}
+            </span>
+            {installEvt && (
+              <button
+                className="install"
+                onClick={() => {
+                  installEvt.prompt()
+                  setInstallEvt(null)
+                }}
+              >
+                安裝到主畫面
+              </button>
+            )}
+            <span className="badge ver" title="依行程筆記產生的版本">
+              {APP_VERSION} · {UPDATED_AT} 更新
+            </span>
+          </div>
+        </header>
 
-      <figure className="routemap">
-        <img
-          src={routeMapUrl}
-          alt="九州自駕路線插畫地圖：熊本、阿蘇、別府、由布院、九重夢大吊橋、太宰府、博多、柳川等景點與行進路線"
-          width={1400}
-          height={788}
-          decoding="async"
-        />
-      </figure>
+        <figure className="routemap">
+          <img
+            src={routeMapUrl}
+            alt="九州自駕路線插畫地圖：熊本、阿蘇、別府、由布院、九重夢大吊橋、太宰府、博多、柳川等景點與行進路線"
+            width={1400}
+            height={788}
+            decoding="async"
+          />
+        </figure>
 
-      {trip.packing && <PackingPanel pack={trip.packing} />}
+        {trip.packing && <PackingPanel pack={trip.packing} />}
 
-      <section className="panel">
-        <h2 className="ptitle">行前確認</h2>
+        <section className="panel">
+          <h2 className="ptitle">行前確認</h2>
 
-        <nav className="noticenav" aria-label="選擇要看哪一類確認事項">
-          {trip.notices.map((g) => (
-            <button
-              key={g.tag}
-              className={`noticebtn${g.highlight ? ' hl' : ''}${
-                openNotice === g.tag ? ' on' : ''
-              }`}
-              onClick={() =>
-                setOpenNotice((prev) => (prev === g.tag ? null : g.tag))
-              }
-              aria-pressed={openNotice === g.tag}
-            >
-              <span className="nbname">{g.tag}</span>
-              <span className="nbnum">
-                {g.items.length ? `${g.items.length} 則` : '待補'}
-              </span>
-            </button>
-          ))}
-        </nav>
+          <nav className="noticenav" aria-label="選擇要看哪一類確認事項">
+            {trip.notices.map((g) => (
+              <button
+                key={g.tag}
+                className={`noticebtn${g.highlight ? ' hl' : ''}${
+                  openNotice === g.tag ? ' on' : ''
+                }`}
+                onClick={() =>
+                  setOpenNotice((prev) => (prev === g.tag ? null : g.tag))
+                }
+                aria-pressed={openNotice === g.tag}
+              >
+                <span className="nbname">{g.tag}</span>
+                <span className="nbnum">
+                  {g.items.length ? `${g.items.length} 則` : '待補'}
+                </span>
+              </button>
+            ))}
+          </nav>
 
-        {notice &&
-          (notice.items.length > 0 ? (
-            <ul className="noticelist">
-              {notice.items.map((it, i) => (
-                <li key={i}>
-                  <RichText text={it} />
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="noticeempty">這一類還沒有內容</p>
-          ))}
-      </section>
+          {notice &&
+            (notice.items.length > 0 ? (
+              <ul className="noticelist">
+                {notice.items.map((it, i) => (
+                  <li key={i}>
+                    <RichText text={it} />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="noticeempty">這一類還沒有內容</p>
+            ))}
+        </section>
 
-      <section className="panel">
-        <h2 className="ptitle">
-          每日行程
-          <span className="count">
-            {trip.days.length} 天・{totalStops} 個停留點
-          </span>
-        </h2>
+        <section className="panel">
+          <h2 className="ptitle">
+            每日行程
+            <span className="count">
+              {trip.days.length} 天・{totalStops} 個停留點
+            </span>
+          </h2>
 
-        <nav className="daynav" ref={navRef} aria-label="選擇要看哪一天的行程">
-          {trip.days.map((day) => (
-            <button
-              key={day.id}
-              className={`daybtn${selected === day.id ? ' on' : ''}`}
-              onClick={() => pick(day.id)}
-              aria-pressed={selected === day.id}
-            >
-              <span className="dbdate">{day.date}</span>
-              <span className="dbshort">{day.short}</span>
-            </button>
-          ))}
-        </nav>
+          <nav className="daynav" ref={navRef} aria-label="選擇要看哪一天的行程">
+            {trip.days.map((day) => (
+              <button
+                key={day.id}
+                className={`daybtn${selected === day.id ? ' on' : ''}`}
+                onClick={() => pick(day.id)}
+                aria-pressed={selected === day.id}
+              >
+                <span className="dbdate">{day.date}</span>
+                <span className="dbshort">{day.short}</span>
+              </button>
+            ))}
+          </nav>
 
-        <div className="daywrap">{current && <DayPanel day={current} />}</div>
-      </section>
+          <div className="daywrap">{current && <DayPanel day={current} />}</div>
+        </section>
 
-      {trip.credit && (
-        <footer className="credit">
-          <RichText text={trip.credit} />
-        </footer>
-      )}
+        {trip.credit && (
+          <footer className="credit">
+            <RichText text={trip.credit} />
+          </footer>
+        )}
+      </div>
 
-      {ledgerOpen && <LedgerPage onClose={() => setLedgerOpen(false)} />}
-    </div>
+      {tab === 'ledger' && <LedgerPage />}
+
+      <nav className="tabbar" aria-label="切換頁面">
+        <button
+          type="button"
+          className={tab === 'trip' ? 'on' : ''}
+          onClick={() => setTab('trip')}
+        >
+          行程
+        </button>
+        <button
+          type="button"
+          className={tab === 'ledger' ? 'on' : ''}
+          onClick={() => setTab('ledger')}
+        >
+          旅費記帳
+        </button>
+      </nav>
+    </>
   )
 }

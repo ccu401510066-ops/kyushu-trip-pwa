@@ -35,7 +35,51 @@ body {
 .page {
   max-width: 780px;
   margin: 0 auto;
-  padding: 0 0 56px;
+  padding: 0 0 calc(78px + env(safe-area-inset-bottom, 0px));
+}
+
+/* 切到另一個頁籤時把整頁收起來（保留狀態，切回來不用重新載入） */
+.viewoff { display: none; }
+
+/* 底部頁籤：行程／旅費記帳 */
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 70;
+  display: flex;
+  max-width: 780px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.tabbar button {
+  flex: 1;
+  min-height: 56px;
+  padding: 12px 0 10px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 13.5px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  cursor: pointer;
+  position: relative;
+}
+.tabbar button.on { color: var(--navy); font-weight: 700; }
+.tabbar button.on::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 3px;
+  border-radius: 0 0 3px 3px;
+  background: var(--navy);
 }
 
 /* ---------- Hero ---------- */

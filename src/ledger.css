@@ -1,12 +1,8 @@
 /* 旅費記帳 */
 .lg-page {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
+  min-height: 100vh;
   background: var(--bg);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 96px;
+  padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px));
 }
 
 .lg-top {
@@ -88,7 +84,7 @@
   position: fixed;
   left: 16px;
   right: 16px;
-  bottom: 88px;
+  bottom: calc(144px + env(safe-area-inset-bottom, 0px));
   background: #fff2f0;
   border: 1px solid #f3c2bd;
   border-radius: 10px;
@@ -169,7 +165,7 @@
 .lg-fab {
   position: fixed;
   right: 20px;
-  bottom: 24px;
+  bottom: calc(76px + env(safe-area-inset-bottom, 0px));
   width: 56px;
   height: 56px;
   border-radius: 50%;
@@ -326,25 +322,6 @@
   cursor: pointer;
 }
 .lg-logout { color: #b3261e; border-color: #f0c7c2; }
-
-/* 左下角固定「回行程」：手機拇指容易按到，不必跑到最上面 */
-.lg-back {
-  position: fixed;
-  left: 16px;
-  bottom: calc(22px + env(safe-area-inset-bottom, 0px));
-  z-index: 65;
-  padding: 13px 20px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.97);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
-  font: inherit;
-  font-size: 14.5px;
-  font-weight: 600;
-  color: var(--navy);
-  cursor: pointer;
-}
-.lg-back:active { transform: scale(0.97); }
 
 .lg-busy {
   position: fixed;

@@ -832,7 +832,7 @@ function AdminPanel({
   )
 }
 
-export default function LedgerPage({ onClose }: { onClose: () => void }) {
+export default function LedgerPage() {
   const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY) ?? '')
   const [state, setState] = useState<State | null>(() => readJSON<State | null>(CACHE_KEY, null))
   const [error, setError] = useState('')
@@ -900,10 +900,6 @@ export default function LedgerPage({ onClose }: { onClose: () => void }) {
 
       {error && <p className="lg-err lg-floaterr">{error}</p>}
       {state && !state.me && <p className="lg-hint">請重新登入</p>}
-
-      <button type="button" className="lg-back" onClick={onClose}>
-        ‹ 回行程
-      </button>
     </div>
   )
 }

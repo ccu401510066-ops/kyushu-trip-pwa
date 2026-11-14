@@ -116,6 +116,82 @@ function settlement(members: Member[], expenses: Expense[]) {
   return { bal, transfers }
 }
 
+function TransferDetail({
+  from,
+  to,
+  names,
+  expenses,
+  suggest,
+}: {
+  from: string
+  to: string
+  names: Record<string, string>
+  expenses: Expense[]
+  suggest: number
+}) {
+  const share = (e: Expense) => e.amountTwd / e.shares.length
+  const toForFrom = expenses.filter((e) => e.payerId === to && e.shares.includes(from))
+  const fromForTo = expenses.filter((e) => e.payerId === from && e.shares.includes(to))
+  const sumTo = toForFrom.reduce((n, e) => n + share(e), 0)
+  const sumFrom = fromForTo.reduce((n, e) => n + share(e), 0)
+  const diff = Math.round(sumTo - sumFrom)
+  const offBy = Math.round(suggest) - diff
+
+  const rows = (list: Expense[], whoPays: string) =>
+    list.length ? (
+      list.map((e) => (
+        <div key={e.id} className="lg-drow">
+          <span className="lg-ddate">{e.date.slice(5)}</span>
+          <span className="lg-dname">
+            <b>{e.title}</b>
+            <span>
+              {names[whoPays] ?? ''} 付 {e.currency === 'JPY' ? jpy(e.amount) : twd(e.amount)}・{e.shares.length} 人分
+            </span>
+          </span>
+          <span className="lg-damt">{twd(share(e))}</span>
+        </div>
+      ))
+    ) : (
+      <p className="lg-hint lg-dempty">沒有</p>
+    )
+
+  return (
+    <div className="lg-detail">
+      <div className="lg-dhead">
+        {names[to]} 幫 {names[from]} 墊的
+      </div>
+      {rows(toForFrom, to)}
+      <div className="lg-dsum">
+        <span>小計</span>
+        <b>{twd(sumTo)}</b>
+      </div>
+
+      <div className="lg-dhead">
+        {names[from]} 幫 {names[to]} 墊的
+      </div>
+      {rows(fromForTo, from)}
+      <div className="lg-dsum">
+        <span>小計</span>
+        <b>{twd(sumFrom)}</b>
+      </div>
+
+      <div className="lg-dnet">
+        <span>
+          兩人直接對帳：
+          {diff >= 0 ? `${names[from]} 給 ${names[to]}` : `${names[to]} 給 ${names[from]}`}
+        </span>
+        <b>{twd(Math.abs(diff))}</b>
+      </div>
+
+      {offBy !== 0 && (
+        <p className="lg-dnote">
+          上面建議轉帳 {twd(suggest)}，和兩人直接對帳差 {twd(Math.abs(offBy))}——因為把其他人的帳一起對沖掉了，實際轉帳照上面的數字就好。
+        </p>
+      )}
+    </div>
+  )
+}
+
 function Login({ onDone }: { onDone: (token: string) => void }) {
   const [names, setNames] = useState<{ name: string; role: string }[]>([])
   const [name, setName] = useState('')
@@ -345,6 +421,7 @@ function EditSheet({
 
 function LedgerInner({ me, state, onRefresh, onLogout }: { me: Member; state: State; onRefresh: () => void; onLogout: () => void }) {
   const [tab, setTab] = useState<'list' | 'settle' | 'admin'>('list')
+  const [openKey, setOpenKey] = useState<string | null>(null)
   const [editing, setEditing] = useState<Draft | null>(null)
   const [err, setErr] = useState('')
   const [busy, setBusy] = useState(false)
@@ -486,14 +563,35 @@ function LedgerInner({ me, state, onRefresh, onLogout }: { me: Member; state: St
         <div className="lg-settle">
           <h3>誰該給誰</h3>
           {transfers.length === 0 && <p className="lg-hint">目前不用轉帳，帳是平的。</p>}
-          {transfers.map((t, i) => (
-            <div key={i} className="lg-transfer">
-              <span>{names[t.from] ?? '？'}</span>
-              <span className="lg-arrow">→</span>
-              <span>{names[t.to] ?? '？'}</span>
-              <b>{twd(t.amount)}</b>
-            </div>
-          ))}
+          {transfers.map((t, i) => {
+            const key = `${t.from}-${t.to}`
+            const open = openKey === key
+            return (
+              <div key={i} className="lg-tblock">
+                <button
+                  type="button"
+                  className={`lg-transfer${open ? ' open' : ''}`}
+                  onClick={() => setOpenKey(open ? null : key)}
+                  aria-expanded={open}
+                >
+                  <span>{names[t.from] ?? '？'}</span>
+                  <span className="lg-arrow">→</span>
+                  <span>{names[t.to] ?? '？'}</span>
+                  <b>{twd(t.amount)}</b>
+                  <span className="lg-chev">{open ? '▾' : '▸'}</span>
+                </button>
+                {open && (
+                  <TransferDetail
+                    from={t.from}
+                    to={t.to}
+                    names={names}
+                    expenses={state.expenses}
+                    suggest={t.amount}
+                  />
+                )}
+              </div>
+            )
+          })}
 
           <h3>每個人的淨額</h3>
           {state.members
